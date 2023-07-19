@@ -73,7 +73,7 @@ body {
 /* Start Hero Section */
 .hero {
   min-height: calc(100vh - 60px);
-  background: url("./images/healthy-background.avif") center/cover no-repeat;
+  background: url("../images/healthy-background.avif") center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
