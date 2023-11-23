@@ -2,12 +2,14 @@
 const cartBtn = document.querySelector('.cart-btn');
 const closeCartBtn = document.querySelector('.close-cart');
 const clearCartBtn = document.getElementById('clearCartBtn')
+const transparentBcg = document.querySelector('.transparentBcg');
 const cartDOM = document.querySelector('.cart');
 const cartOverlay = document.querySelector('.cart-overlay');
 const cartItems = document.querySelector('.cart-items');
 const cartTotal = document.querySelector('.cart-total');
 const cartContent = document.querySelector('.cart-content');
 const productsDOM = document.querySelector('.products-center');
+
 // Cart Item
 let cart = [];
 
@@ -18,8 +20,7 @@ let buttonsDOM = [];
 class Products {
     async getProducts() {
         try {
-            debugger;
-            let result = await fetch('products.json');
+            let result = await fetch('/products.json');
             let data = await result.json();
 
             let products = data.items;
@@ -85,7 +86,7 @@ class UI {
                 // Display Cart Item
                 this.addCartItem(cartItem);
                 // Show The Cart
-                this.showCart()
+                this.showCart();
             });
         });
     }
@@ -133,6 +134,11 @@ class UI {
         this.populateCart(cart);
         cartBtn.addEventListener('click', this.showCart);
         closeCartBtn.addEventListener('click', this.hideCart);
+        cartOverlay.addEventListener('click', (e) => {
+            if (e.target.classList.contains("transparentBcg")) {
+                this.hideCart();
+            }
+        });
     }
 
     populateCart(cart) {
@@ -160,19 +166,19 @@ class UI {
                 let addAmount = event.target;
                 let id = addAmount.dataset.id;
                 let tempItem = cart.find(item => item.id === id); // So We Have Cart Array And We're Looking For A Specific Item And Return Me This Specific Item Whose id matches the id That We Just Clicked On
-                tempItem.amount = tempItem.amount + 1;
-                Storage.saveCart(cart);
+                tempItem.amount += 1;
                 this.setCartValues(cart);
-                addAmount.nextElementSibiling.innerText = tempItem.amount;
+                Storage.saveCart(cart);
+                addAmount.nextElementSibling.innerText = tempItem.amount;
             } else if (event.target.classList.contains("fa-chevron-down")) {
                 let lowerAmount = event.target;
                 let id = lowerAmount.dataset.id;
                 let tempItem = cart.find(item => item.id === id); // So We Have Cart Array And We're Looking For A Specific Item And Return Me This Specific Item Whose id matches the id That We Just Clicked On
-                tempItem.amount = tempItem.amount - 1;
+                tempItem.amount -= 1;
                 if (tempItem.amount > 0) {
-                    Storage.saveCart(cart);
                     this.setCartValues(cart);
-                    lowerAmount.previousElementSibiling.innerText = tempItem.amount;
+                    Storage.saveCart(cart);
+                    lowerAmount.previousElementSibling.innerText = tempItem.amount;
                 } else {
                     cartContent.removeChild(lowerAmount.parentElement.parentElement);
                     this.removeItem(id);
